@@ -14,7 +14,7 @@ const News = () => {
 
   const navigate = useNavigate();
   //hàm kiểm tra người dùng đã đăng nhập chưa, nếu đã đăng nhập thì sẽ lấy tin tức để hiển thị
-  const checkLogin = useCallback(() => {
+  const checkLogin = useCallback((page) => {
     fetch(`${process.env.REACT_APP_BACKEND}/users/check-login`, {
       method: "GET",
       credentials: "include",
@@ -29,15 +29,28 @@ const News = () => {
               category: data.category,
             });
             fetch(
-              `https://newsapi.org/v2/top-headlines?country=us&category=${data.category}&pageSize=${data.newsPerPage}&page=${page}&apiKey=56ab520df6564dec818d126ff3972e6c`
+              // `https://newsapi.org/v2/top-headlines?country=us&category=${data.category}&pageSize=${data.newsPerPage}&page=${page}&apiKey=56ab520df6564dec818d126ff3972e6c`
+              `${process.env.REACT_APP_BACKEND}/news/get`,
+              {
+                method: "POST",
+                credentials: "include",
+                headers: { "Content-type": "application/json" },
+                body: JSON.stringify({
+                  category: data.category,
+                  size: data.newsPerPage,
+                  page: page,
+                }),
+              }
             )
               .then((response) => response.json())
               .then((newsApiData) => {
                 // console.log(newsApiData);
-                setArticles(newsApiData.articles);
-                setTotalPage(
-                  Math.ceil(newsApiData.totalResults / data.newsPerPage)
-                );
+                if (!newsApiData.err) {
+                  setArticles(newsApiData.articles);
+                  setTotalPage(
+                    Math.ceil(newsApiData.totalResults / data.newsPerPage)
+                  );
+                }
               })
               .catch((err) => {
                 console.log(err);
@@ -50,9 +63,9 @@ const News = () => {
         }
       })
       .catch((err) => console.log(err));
-  }, [page]);
+  }, []);
 
-  useEffect(() => checkLogin(), [page]);
+  useEffect(() => checkLogin(page), [page]);
 
   return (
     <React.Fragment>
@@ -87,7 +100,6 @@ const News = () => {
                   onClick={() => {
                     if (page < totalPage) {
                       setPage((prevState) => (prevState += 1));
-                      // console.log(page);
                     }
                   }}
                 >
@@ -97,7 +109,7 @@ const News = () => {
             </Container>
             <Container>
               {articles.map((article) => (
-                <Card key={(Math.random() * 10).toString()}>
+                <Card key={article._id}>
                   <Row>
                     <Col className="col-12 col-lg-5">
                       <Card.Img variant="top" src={article.urlToImage} />
