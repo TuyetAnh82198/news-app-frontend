@@ -23,11 +23,21 @@ const News = () => {
   const searchHandler = (keyword, page) => {
     if (keyword !== "") {
       fetch(
-        `https://newsapi.org/v2/everything?q=${keyword}&pageSize=5&page=${page}&apiKey=56ab520df6564dec818d126ff3972e6c`
+        // `https://newsapi.org/v2/everything?q=${keyword}&pageSize=5&page=${page}&apiKey=56ab520df6564dec818d126ff3972e6c`
+        `${process.env.REACT_APP_BACKEND}/news/search`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-type": "application/json" },
+          body: JSON.stringify({
+            keyword: keyword,
+            page: page,
+          }),
+        }
       )
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
+          // console.log(data);
           setArticles(data.articles);
           setTotalPage(Math.ceil(data.totalResults / 5));
         })
@@ -82,7 +92,7 @@ const News = () => {
             onClick={() => {
               if (page > 1) {
                 setPage((prevState) => (prevState -= 1));
-                searchHandler(keyword, page);
+                searchHandler(keyword, page - 1);
               }
             }}
           >
@@ -95,7 +105,7 @@ const News = () => {
             onClick={() => {
               if (page < totalPage) {
                 setPage((prevState) => (prevState += 1));
-                searchHandler(keyword, page);
+                searchHandler(keyword, page + 1);
               }
             }}
           >
