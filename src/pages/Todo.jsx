@@ -111,7 +111,10 @@ const Todo = () => {
 
   //hàm đánh dấu task hoặc hoàn tác đánh dấu
   const done = (id) => {
-    fetch(`${process.env.REACT_APP_BACKEND}/todo/done/${id}`)
+    fetch(`${process.env.REACT_APP_BACKEND}/todo/done/${id}`, {
+      method: "GET",
+      credentials: "include",
+    })
       .then((response) => response.json())
       .then((data) => {
         if (data.message === "have not been logged in yet") {
