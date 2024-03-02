@@ -1,0 +1,21 @@
+/* None */
+@media screen and (max-width: 575.98px) {
+}
+/*sm*/
+@media screen and (min-width: 576px) and (max-width: 767.98px) {
+  .label {
+    font-size: 0.7rem;
+  }
+}
+/*md*/
+@media screen and (min-width: 768px) and (max-width: 991.98px) {
+}
+/*lg*/
+@media screen and (min-width: 992px) and (max-width: 1199.98px) {
+}
+/*xl*/
+@media screen and (min-width: 1200px) and (max-width: 1399.98px) {
+}
+/*xxl*/
+@media screen and (min-width: 1400px) {
+}
