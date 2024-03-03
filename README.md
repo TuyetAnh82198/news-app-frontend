@@ -38,6 +38,7 @@ nodemon.json:
 And then update scripts in package.json, for example:
 "start": "NODE_ENV=development CLIENT=http://localhost:3000 MONGODB_USER=abc MONGODB_PASS=xyz nodemon app.js"
 
+_We can use newsapi with my api key which is commented for more data._
 
 **Login information:**
 email: abc@gmail.com
