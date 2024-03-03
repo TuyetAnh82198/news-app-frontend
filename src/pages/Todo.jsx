@@ -128,7 +128,10 @@ const Todo = () => {
   const deleteTask = (id) => {
     const confirm = window.confirm("Are you sure?");
     if (confirm) {
-      fetch(`${process.env.REACT_APP_BACKEND}/todo/deleteItem/${id}`)
+      fetch(`${process.env.REACT_APP_BACKEND}/todo/deleteItem/${id}`,{
+        method: "GET",
+        credentials: "include",
+      })
         .then((response) => response.json())
         .then((data) => {
           if (data.message === "have not been logged in yet") {
