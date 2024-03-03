@@ -27,7 +27,6 @@ const News = () => {
         `${process.env.REACT_APP_BACKEND}/news/search`,
         {
           method: "POST",
-          credentials: "include",
           headers: { "Content-type": "application/json" },
           body: JSON.stringify({
             keyword: keyword,
