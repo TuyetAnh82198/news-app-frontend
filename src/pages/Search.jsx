@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Container,
   Button,
@@ -19,6 +20,26 @@ const News = () => {
   //state từ khóa tìm kiếm
   const [keyword, setKeyword] = useState("");
 
+  const navigate = useNavigate();
+  //hàm kiểm tra người dùng đã đăng nhập chưa
+  const checkLogin = useCallback(() => {
+    fetch(`${process.env.REACT_APP_BACKEND}/users/check-login`, {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (!data.err) {
+          if (!data.firstName) {
+            navigate("/");
+          }
+        }
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  useEffect(() => checkLogin(), []);
+
   //hàm tìm bài viết theo từ khóa
   const searchHandler = (keyword, page) => {
     if (keyword !== "") {
@@ -27,6 +48,7 @@ const News = () => {
         `${process.env.REACT_APP_BACKEND}/news/search`,
         {
           method: "POST",
+          credentials: "include",
           headers: { "Content-type": "application/json" },
           body: JSON.stringify({
             keyword: keyword,
@@ -36,9 +58,17 @@ const News = () => {
       )
         .then((response) => response.json())
         .then((data) => {
-          // console.log(data);
-          setArticles(data.articles);
-          setTotalPage(Math.ceil(data.totalResults / 5));
+          if (!data.err) {
+            // console.log(data);
+            if (data.message === "have not been logged in yet") {
+              navigate("/login");
+            } else {
+              setArticles(data.articles);
+              setTotalPage(Math.ceil(data.totalResults / 5));
+            }
+          } else {
+            navigate("/server-error");
+          }
         })
         .catch((err) => console.log(err));
     } else if (keyword === "") {
